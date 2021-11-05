@@ -17,9 +17,14 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/', (req, res) => {
+    res.send('Hello, I am CRM bot!');
+})
+
 app.use(express.json());
 
 app.post('/', (req, res) => {
+    console.log(req);
     bot.use((ctx) => {
         ctx.telegram.sendMessage(
             process.env.ADMIN_TG_ID,
