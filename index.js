@@ -6,7 +6,15 @@ import { Telegraf } from 'telegraf';
 const port = process.env.PORT || 3000;
 const app = express(); // create express server
 
-const bot = new Telegraf(process.env.TOKEN); // create Telegram bot
+// Telegram bot settings
+const config = {
+	telegram: { 
+        agent: null,
+        webhookReply: true,
+    }
+};
+
+const bot = new Telegraf(process.env.TOKEN, config); // create Telegram bot
 
 // use middleware (setting headers)
 app.use((req, res, next) => {
@@ -31,19 +39,19 @@ app.post('/', (req, res) => {
         bot.use((ctx) => {
             ctx.telegram.sendMessage(
                 process.env.ADMIN_TG_ID,
-                `New order received!
-                Contact number: ${req.body.phoneNumber}
-                Shipping:
-                ${req.body.firstName} ${req.body.lastName}
-                address: ${req.body.address}
-                postalCode: ${req.body.postalCode}
-                Items: ${req.body.items.map((_item) => {
-                    return `${_item.item}\n${_item.sku}\n${_item.qtyForSale}\n`;
+                `New order received!\n
+                Contact number: ${req.body.phoneNumber}\n\n
+                Shipping:\n
+                ${req.body.firstName} ${req.body.lastName}\n
+                address: ${req.body.address}\n
+                postalCode: ${req.body.postalCode}\n\n
+                Items:\n ${req.body.items.map((_item) => {
+                    return `${_item.item}\n${_item.sku}\n${_item.qtyForSale}\n\n`;
                 })}
                 Total: ${req.body.total} ${req.body.currency}`
             );
         });
-        return res.send('Order sended to admin!');
+        return res.status(200).json({ msg: 'Order sended to admin!' });
     } catch (error) {
         return res.status(400).json({ error: 'Something wrong...' });
     }
