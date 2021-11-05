@@ -3,13 +3,10 @@ dotenv.config();
 import express from 'express';
 import { Telegraf } from 'telegraf';
 // import fetch from 'node-fetch';
-
+const port = 3000;
 const app = express(); // create express server
 
 const bot = new Telegraf(process.env.TOKEN); // create Telegram bot
-bot.startPolling();
-
-app.listen(4000, () => console.log('Bot started on port 4000.'));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -27,6 +24,10 @@ app.post('/', (req, res) => {
         ctx.telegram.sendMessage(
             process.env.ADMIN_TG_ID,
             `Msg: ${req.body.text}`
-        )
-    })
+        );
+    });
 });
+
+bot.startPolling(); // run Telegram bot
+
+app.listen(port, () => console.log(`Bot started on port ${port}.`));
