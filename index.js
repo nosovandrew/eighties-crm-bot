@@ -14,6 +14,7 @@ const telegram = new Telegram(process.env.TOKEN, {
 });
 
 const bot = new Telegraf(process.env.TOKEN); // create Telegram bot
+
 bot.startPolling(); // start poll updates
 
 // use middleware (setting headers)
@@ -35,22 +36,23 @@ app.use(express.json()); // parse incoming data
 // handle post query from ecommerce app
 app.post('/send-message', (req, res) => {
     try {
-        // send msg (new order info) to Admin
-        telegram.sendMessage(
-            process.env.ADMIN_TG_ID,
-            `New order received!\n
-            *Contact number*: ${req.body.phoneNumber}\n
-            Shipping:\n
-            ${req.body.firstName} ${req.body.lastName}\n
-            address: ${req.body.address}\n
-            postalCode: ${req.body.postalCode}\n\n
-            Items:\n ${req.body.items.map(
-                (_item) =>
-                    `Name: ${_item.item}\nSKU: ${_item.sku}\nQTY: ${_item.qtyForSale}\n`
-            )}
-            Total: ${req.body.total} ${req.body.currency}`
+        const data = req.body; // minimize code
+        // create msg string with order data
+        let orderMsg = '📬 NEW ORDER 📬:\n';
+        orderMsg += '**Phone number**: ' + data.phoneNumber + '\n';
+        orderMsg += '**Shipping**:\n';
+        orderMsg += 'customer: ' + data.firstName + ' ' + data.lastName + '\n';
+        orderMsg += 'address: ' + data.address + '\n';
+        orderMsg += 'postal code: ' + data.postalCode + '\n';
+        orderMsg += '**Items**:\n';
+        data.items.map(
+            (_item) =>
+                (orderMsg += `Name: ${_item.item}\nSKU: ${_item.sku}\nQTY: ${_item.qtyForSale}\n`)
         );
-        return res.status(200).json({ msg: 'Order sended to admin!' });
+        orderMsg += '**Total**: ' + data.total + data.currency;
+        // send msg (new order info) to Admin
+        telegram.sendMessage(process.env.ADMIN_TG_ID, orderMsg);
+        return res.status(200).json({ msg: 'Order sended to manager!' });
     } catch (error) {
         return res.status(400).json({ error: 'Something wrong...' });
     }
