@@ -27,14 +27,27 @@ app.use(express.json()); // parse incoming data
 
 // handle post query from ecommerce app
 app.post('/', (req, res) => {
-    // send msg (new order info) to Admin
-    bot.use((ctx) => {
-        ctx.telegram.sendMessage(
-            process.env.ADMIN_TG_ID,
-            `New order received!
-            Contact number: ${req.body.phoneNumber}`
-        );
-    });
+    try {
+        // send msg (new order info) to Admin
+        bot.use((ctx) => {
+            ctx.telegram.sendMessage(
+                process.env.ADMIN_TG_ID,
+                `New order received!
+                Contact number: ${req.body.phoneNumber}
+                Shipping:
+                ${req.body.firstName} ${req.body.lastName}
+                address: ${req.body.address}
+                postalCode: ${req.body.postalCode}
+                Items: ${req.body.items.map((_item) => {
+                    return `${_item.item}\n${_item.sku}\n${_item.qtyForSale}\n`;
+                })}
+                Total: ${req.body.total} ${req.body.currency}`
+            );
+        });
+        return res.status(200);
+    } catch (error) {
+        return res.status(400).json({ error: 'My custom 400 error' });
+    }
 });
 
 // start express server
