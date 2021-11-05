@@ -32,15 +32,7 @@ app.post('/', (req, res) => {
         ctx.telegram.sendMessage(
             process.env.ADMIN_TG_ID,
             `New order received!
-            Contact number: ${req.body.phoneNumber}
-            Shipping:
-            ${req.body.firstName} ${req.body.lastName}
-            address: ${req.body.address}
-            postalCode: ${req.body.postalCode}
-            Items: ${req.body.items.map(_item => {
-                return `${_item.item}\n${_item.sku}\n${_item.qtyForSale}\n`;
-            })}
-            Total: ${req.body.total} ${req.body.currency}`
+            Contact number: ${req.body.phoneNumber}`
         );
     });
 });
