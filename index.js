@@ -3,7 +3,7 @@ dotenv.config();
 import express from 'express';
 import { Telegraf } from 'telegraf';
 // import fetch from 'node-fetch';
-const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express(); // create express server
 
 const bot = new Telegraf(process.env.TOKEN); // create Telegram bot
