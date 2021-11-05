@@ -7,7 +7,6 @@ const port = process.env.PORT || 3000;
 const app = express(); // create express server
 
 const bot = new Telegraf(process.env.TOKEN); // create Telegram bot
-bot.startPolling(); // start poll updates
 
 // use middleware (setting headers)
 app.use((req, res, next) => {
@@ -44,11 +43,13 @@ app.post('/', (req, res) => {
                 Total: ${req.body.total} ${req.body.currency}`
             );
         });
-        return res.status(200);
+        return res.send('Order sended to admin!');
     } catch (error) {
-        return res.status(400).json({ error: 'My custom 400 error' });
+        return res.status(400).json({ error: 'Something wrong...' });
     }
 });
+
+bot.startPolling(); // start poll updates
 
 // start express server
 app.listen(port, () => console.log(`Bot started on port ${port}.`));
