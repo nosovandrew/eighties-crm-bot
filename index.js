@@ -10,7 +10,7 @@ const app = express(); // create express server
 
 var allowlist = ['https://eighties.vercel.app'];
 var corsOptionsDelegate = function (req, callback) {
-    var corsOptions;
+    let corsOptions;
     if (allowlist.indexOf(req.header('Origin')) !== -1) {
         corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
     } else {
@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
 app.use(express.json()); // parse incoming data
 
 // handle post query from ecommerce app
-app.post('/send-message', (req, res) => {
+app.post('/send-message', cors(corsOptionsDelegate), (req, res) => {
     try {
         const data = req.body; // minimize code
         // create msg string with order data
