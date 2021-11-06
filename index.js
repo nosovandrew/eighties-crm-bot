@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
 app.use(express.json()); // parse incoming data
 
 // handle post query from ecommerce app
-app.post('/send-message', cors(corsOptionsDelegate), (req, res) => {
+app.post('/send-message', (req, res) => {
     try {
         const data = req.body; // minimize code
         // create msg string with order data
