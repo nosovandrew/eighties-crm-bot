@@ -48,13 +48,14 @@ app.use(express.json()); // parse incoming data
 app.post('/send-message', cors(corsOptionsDelegate), (req, res) => {
     try {
         const data = req.body; // minimize code
+        console.log(data);
         // create msg string with order data
         let orderMsg = '📬 NEW ORDER:\n';
         orderMsg += 'Phone number: ' + data.phoneNumber + '\n';
         orderMsg += 'Shipping:\n';
-        orderMsg += 'customer: ' + data.firstName + ' ' + data.lastName + '\n';
-        orderMsg += 'address: ' + data.address + '\n';
-        orderMsg += 'postal code: ' + data.postalCode + '\n';
+        orderMsg += 'customer: ' + data.shipping.firstName + ' ' + data.shipping.lastName + '\n';
+        orderMsg += 'address: ' + data.shipping.address + '\n';
+        orderMsg += 'postal code: ' + data.shipping.postalCode + '\n';
         orderMsg += 'Items:\n';
         data.items.map(
             (_item) =>
