@@ -3,9 +3,21 @@ dotenv.config();
 import express from 'express';
 import { Telegraf } from 'telegraf';
 import { Telegram } from 'telegraf';
+import cors from 'cors';
 // import fetch from 'node-fetch';
 const port = process.env.PORT || 3000;
 const app = express(); // create express server
+
+var allowlist = ['https://eighties.vercel.app'];
+var corsOptionsDelegate = function (req, callback) {
+    var corsOptions;
+    if (allowlist.indexOf(req.header('Origin')) !== -1) {
+        corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+    } else {
+        corsOptions = { origin: false }; // disable CORS for this request
+    }
+    callback(null, corsOptions); // callback expects two parameters: error and options
+};
 
 // global context for sending msg by request from app
 const telegram = new Telegram(process.env.TOKEN, {
@@ -33,7 +45,7 @@ app.get('/', (req, res) => {
 app.use(express.json()); // parse incoming data
 
 // handle post query from ecommerce app
-app.post('/send-message', (req, res) => {
+app.post('/send-message', cors(corsOptionsDelegate), (req, res) => {
     try {
         const data = req.body; // minimize code
         // create msg string with order data
