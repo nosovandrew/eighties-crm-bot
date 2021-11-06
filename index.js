@@ -8,6 +8,7 @@ import cors from 'cors';
 const port = process.env.PORT || 3000;
 const app = express(); // create express server
 
+// allow ecommerce app domain via cors policy
 var allowlist = ['https://eighties.vercel.app'];
 var corsOptionsDelegate = function (req, callback) {
     let corsOptions;
@@ -44,11 +45,10 @@ app.get('/', (req, res) => {
 
 app.use(express.json()); // parse incoming data
 
-// handle post query from ecommerce app
+// handle post query from ecommerce app (with cors)
 app.post('/send-message', cors(corsOptionsDelegate), (req, res) => {
     try {
         const data = req.body; // minimize code
-        console.log(data);
         // create msg string with order data
         let orderMsg = '📬 NEW ORDER:\n';
         orderMsg += 'Phone number: ' + data.phoneNumber + '\n';
